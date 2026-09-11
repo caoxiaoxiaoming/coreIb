@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.caoxiaoxiaoming</groupId>
-    <artifactId>coreIb</artifactId>
-    <version>1.0.0</version>
+    <artifactId>coreib</artifactId>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <name>coreIb</name>
@@ -15,7 +15,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.outputTimestamp>2026-09-11T00:00:00Z</project.build.outputTimestamp>
         <maven.compiler.release>8</maven.compiler.release>
+        <maven.resources.propertiesEncoding>UTF-8</maven.resources.propertiesEncoding>
         <junit.version>5.11.4</junit.version>
     </properties>
 
@@ -51,6 +53,14 @@
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <propertiesEncoding>${project.build.sourceEncoding}</propertiesEncoding>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

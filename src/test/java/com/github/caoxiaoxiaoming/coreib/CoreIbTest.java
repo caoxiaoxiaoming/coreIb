@@ -7,6 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CoreIbTest {
     @Test
     void exposesReleaseVersion() {
-        assertEquals("1.0.0", CoreIb.version());
+        assertEquals("1.0.1", CoreIb.version());
     }
 }

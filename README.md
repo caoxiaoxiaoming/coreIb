@@ -1,14 +1,14 @@
 # coreIb
 
-`coreIb` is a small Java 8-compatible Maven library. The current release is `1.0.0`.
+`coreIb` is a small Java 8-compatible Maven library. The current release is `1.0.1`.
 
 ## Maven coordinates
 
 ```xml
 <dependency>
     <groupId>com.github.caoxiaoxiaoming</groupId>
-    <artifactId>coreIb</artifactId>
-    <version>1.0.0</version>
+    <artifactId>coreib</artifactId>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -35,4 +35,4 @@ String version = CoreIb.version();
 mvn clean verify
 ```
 
-A tag matching the Maven version, such as `v1.0.0`, triggers the GitHub Actions publishing workflow.
+A tag matching the Maven version, such as `v1.0.1`, triggers the GitHub Actions publishing workflow.
