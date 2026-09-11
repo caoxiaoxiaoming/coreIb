@@ -1,0 +1,769 @@
+databaseChangeLog:
+  - changeSet:
+      id: coreib-001-platform-metadata
+      author: coreib
+      labels: baseline
+      comment: Platform-owned metadata used to verify migration state.
+      changes:
+        - createTable:
+            tableName: coreib_platform_metadata
+            columns:
+              - column:
+                  name: id
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_coreib_platform_metadata
+              - column:
+                  name: platform_version
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+        - insert:
+            tableName: coreib_platform_metadata
+            columns:
+              - column:
+                  name: id
+                  value: coreib
+              - column:
+                  name: platform_version
+                  value: 0.1.0-SNAPSHOT
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+      rollback:
+        - dropTable:
+            tableName: coreib_platform_metadata
+
+  - changeSet:
+      id: coreib-002-security-permission-foundation
+      author: coreib
+      labels: security
+      comment: Portable authorization metadata for roles, management relationships, row scopes and field access.
+      changes:
+        - createTable:
+            tableName: coreib_sec_role
+            columns:
+              - column:
+                  name: role_code
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_coreib_sec_role
+              - column:
+                  name: display_name
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(512)
+              - column:
+                  name: enabled
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: coreib_sec_user_role
+            columns:
+              - column:
+                  name: id
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_coreib_sec_user_role
+              - column:
+                  name: user_id
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_code
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: coreib_sec_permission
+            columns:
+              - column:
+                  name: id
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_coreib_sec_permission
+              - column:
+                  name: role_code
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: resource
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: action
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: row_scope
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: policy_key
+                  type: varchar(128)
+              - column:
+                  name: enabled
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: coreib_sec_field_permission
+            columns:
+              - column:
+                  name: id
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_coreib_sec_field_permission
+              - column:
+                  name: role_code
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: resource
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: field_name
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: access_mode
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: coreib_sec_user_supervisor
+            columns:
+              - column:
+                  name: id
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_coreib_sec_user_supervisor
+              - column:
+                  name: user_id
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: supervisor_id
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: relation_type
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: active
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: effective_from
+                  type: datetime
+              - column:
+                  name: effective_to
+                  type: datetime
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: coreib_sec_record_assignment
+            columns:
+              - column:
+                  name: id
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_coreib_sec_record_assignment
+              - column:
+                  name: resource
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: record_id
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: assignment_type
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: active
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: effective_from
+                  type: datetime
+              - column:
+                  name: effective_to
+                  type: datetime
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: coreib_sec_record_assignment
+        - dropTable:
+            tableName: coreib_sec_user_supervisor
+        - dropTable:
+            tableName: coreib_sec_field_permission
+        - dropTable:
+            tableName: coreib_sec_permission
+        - dropTable:
+            tableName: coreib_sec_user_role
+        - dropTable:
+            tableName: coreib_sec_role
+
+  - changeSet:
+      id: coreib-003-platform-directory
+      author: coreib
+      labels: platform
+      comment: Portable organization and user directory shared by platform adapters.
+      changes:
+        - createTable:
+            tableName: coreib_sys_organization
+            columns:
+              - column:
+                  name: id
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_coreib_sys_organization
+              - column:
+                  name: parent_id
+                  type: varchar(64)
+              - column:
+                  name: org_code
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: display_name
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: org_type
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sort_order
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: enabled
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: coreib_sys_organization
+            columnNames: org_code
+            constraintName: uk_coreib_sys_organization_code
+        - createIndex:
+            tableName: coreib_sys_organization
+            indexName: idx_coreib_sys_organization_parent
+            columns:
+              - column:
+                  name: parent_id
+        - createTable:
+            tableName: coreib_sys_user
+            columns:
+              - column:
+                  name: id
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_coreib_sys_user
+              - column:
+                  name: login_name
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: display_name
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: organization_id
+                  type: varchar(64)
+              - column:
+                  name: external_identity
+                  type: varchar(256)
+              - column:
+                  name: enabled
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: coreib_sys_user
+            columnNames: login_name
+            constraintName: uk_coreib_sys_user_login
+        - createIndex:
+            tableName: coreib_sys_user
+            indexName: idx_coreib_sys_user_organization
+            columns:
+              - column:
+                  name: organization_id
+      rollback:
+        - dropTable:
+            tableName: coreib_sys_user
+        - dropTable:
+            tableName: coreib_sys_organization
+
+  - changeSet:
+      id: coreib-004-audit-event
+      author: coreib
+      labels: audit
+      comment: Portable append-only audit events for platform and business commands.
+      changes:
+        - createTable:
+            tableName: coreib_audit_event
+            columns:
+              - column:
+                  name: event_id
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_coreib_audit_event
+              - column:
+                  name: actor_id
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: action
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: resource
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: target_id
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: outcome
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: details
+                  type: varchar(2000)
+              - column:
+                  name: occurred_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+        - createIndex:
+            tableName: coreib_audit_event
+            indexName: idx_coreib_audit_event_actor_time
+            columns:
+              - column:
+                  name: actor_id
+              - column:
+                  name: occurred_at
+      rollback:
+        - dropTable:
+            tableName: coreib_audit_event
+
+  - changeSet:
+      id: coreib-005-security-integrity
+      author: coreib
+      labels: security
+      comment: Portable foreign keys, uniqueness rules and lookup indexes for authorization data.
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: coreib_sys_organization
+            baseColumnNames: parent_id
+            referencedTableName: coreib_sys_organization
+            referencedColumnNames: id
+            constraintName: fk_cib_org_parent
+        - addForeignKeyConstraint:
+            baseTableName: coreib_sys_user
+            baseColumnNames: organization_id
+            referencedTableName: coreib_sys_organization
+            referencedColumnNames: id
+            constraintName: fk_cib_user_org
+        - addForeignKeyConstraint:
+            baseTableName: coreib_sec_user_role
+            baseColumnNames: user_id
+            referencedTableName: coreib_sys_user
+            referencedColumnNames: id
+            constraintName: fk_cib_ur_user
+        - addForeignKeyConstraint:
+            baseTableName: coreib_sec_user_role
+            baseColumnNames: role_code
+            referencedTableName: coreib_sec_role
+            referencedColumnNames: role_code
+            constraintName: fk_cib_ur_role
+        - addForeignKeyConstraint:
+            baseTableName: coreib_sec_permission
+            baseColumnNames: role_code
+            referencedTableName: coreib_sec_role
+            referencedColumnNames: role_code
+            constraintName: fk_cib_perm_role
+        - addForeignKeyConstraint:
+            baseTableName: coreib_sec_field_permission
+            baseColumnNames: role_code
+            referencedTableName: coreib_sec_role
+            referencedColumnNames: role_code
+            constraintName: fk_cib_field_role
+        - addForeignKeyConstraint:
+            baseTableName: coreib_sec_user_supervisor
+            baseColumnNames: user_id
+            referencedTableName: coreib_sys_user
+            referencedColumnNames: id
+            constraintName: fk_cib_sup_user
+        - addForeignKeyConstraint:
+            baseTableName: coreib_sec_user_supervisor
+            baseColumnNames: supervisor_id
+            referencedTableName: coreib_sys_user
+            referencedColumnNames: id
+            constraintName: fk_cib_sup_supervisor
+        - addForeignKeyConstraint:
+            baseTableName: coreib_sec_record_assignment
+            baseColumnNames: user_id
+            referencedTableName: coreib_sys_user
+            referencedColumnNames: id
+            constraintName: fk_cib_assign_user
+        - addUniqueConstraint:
+            tableName: coreib_sec_user_role
+            columnNames: user_id, role_code
+            constraintName: uk_cib_user_role
+        - addUniqueConstraint:
+            tableName: coreib_sec_field_permission
+            columnNames: role_code, resource, field_name
+            constraintName: uk_cib_field_grant
+        - addUniqueConstraint:
+            tableName: coreib_sec_user_supervisor
+            columnNames: user_id, supervisor_id, relation_type
+            constraintName: uk_cib_supervisor
+        - addUniqueConstraint:
+            tableName: coreib_sec_record_assignment
+            columnNames: resource, record_id, user_id, assignment_type
+            constraintName: uk_cib_assignment
+        - createIndex:
+            tableName: coreib_sys_user
+            indexName: idx_cib_user_external
+            columns:
+              - column:
+                  name: external_identity
+        - createIndex:
+            tableName: coreib_sec_permission
+            indexName: idx_cib_perm_role
+            columns:
+              - column:
+                  name: role_code
+              - column:
+                  name: enabled
+              - column:
+                  name: resource
+        - createIndex:
+            tableName: coreib_sec_field_permission
+            indexName: idx_cib_field_role
+            columns:
+              - column:
+                  name: role_code
+              - column:
+                  name: resource
+        - createIndex:
+            tableName: coreib_sec_user_supervisor
+            indexName: idx_cib_sup_manager
+            columns:
+              - column:
+                  name: supervisor_id
+              - column:
+                  name: active
+        - createIndex:
+            tableName: coreib_sec_record_assignment
+            indexName: idx_cib_assign_user
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: active
+              - column:
+                  name: resource
+        - createIndex:
+            tableName: coreib_audit_event
+            indexName: idx_cib_audit_target
+            columns:
+              - column:
+                  name: resource
+              - column:
+                  name: target_id
+              - column:
+                  name: occurred_at
+      rollback:
+        - dropForeignKeyConstraint:
+            baseTableName: coreib_sec_record_assignment
+            constraintName: fk_cib_assign_user
+        - dropForeignKeyConstraint:
+            baseTableName: coreib_sec_user_supervisor
+            constraintName: fk_cib_sup_supervisor
+        - dropForeignKeyConstraint:
+            baseTableName: coreib_sec_user_supervisor
+            constraintName: fk_cib_sup_user
+        - dropForeignKeyConstraint:
+            baseTableName: coreib_sec_field_permission
+            constraintName: fk_cib_field_role
+        - dropForeignKeyConstraint:
+            baseTableName: coreib_sec_permission
+            constraintName: fk_cib_perm_role
+        - dropForeignKeyConstraint:
+            baseTableName: coreib_sec_user_role
+            constraintName: fk_cib_ur_role
+        - dropForeignKeyConstraint:
+            baseTableName: coreib_sec_user_role
+            constraintName: fk_cib_ur_user
+        - dropForeignKeyConstraint:
+            baseTableName: coreib_sys_user
+            constraintName: fk_cib_user_org
+        - dropForeignKeyConstraint:
+            baseTableName: coreib_sys_organization
+            constraintName: fk_cib_org_parent
+        - dropUniqueConstraint:
+            tableName: coreib_sec_record_assignment
+            constraintName: uk_cib_assignment
+        - dropUniqueConstraint:
+            tableName: coreib_sec_user_supervisor
+            constraintName: uk_cib_supervisor
+        - dropUniqueConstraint:
+            tableName: coreib_sec_field_permission
+            constraintName: uk_cib_field_grant
+        - dropUniqueConstraint:
+            tableName: coreib_sec_user_role
+            constraintName: uk_cib_user_role
+        - dropIndex:
+            tableName: coreib_audit_event
+            indexName: idx_cib_audit_target
+        - dropIndex:
+            tableName: coreib_sec_record_assignment
+            indexName: idx_cib_assign_user
+        - dropIndex:
+            tableName: coreib_sec_user_supervisor
+            indexName: idx_cib_sup_manager
+        - dropIndex:
+            tableName: coreib_sec_field_permission
+            indexName: idx_cib_field_role
+        - dropIndex:
+            tableName: coreib_sec_permission
+            indexName: idx_cib_perm_role
+        - dropIndex:
+            tableName: coreib_sys_user
+            indexName: idx_cib_user_external
+
+  - changeSet:
+      id: coreib-006-platform-management
+      author: coreib
+      labels: platform
+      comment: Portable menus, posts, dictionaries, parameters, notices, login events and file metadata.
+      changes:
+        - createTable:
+            tableName: coreib_sys_menu
+            columns:
+              - column: { name: id, type: varchar(64), constraints: { nullable: false, primaryKey: true, primaryKeyName: pk_cib_menu } }
+              - column: { name: parent_id, type: varchar(64) }
+              - column: { name: menu_name, type: varchar(128), constraints: { nullable: false } }
+              - column: { name: path, type: varchar(256) }
+              - column: { name: component, type: varchar(256) }
+              - column: { name: icon, type: varchar(64) }
+              - column: { name: permission_code, type: varchar(256) }
+              - column: { name: menu_type, type: varchar(32), constraints: { nullable: false } }
+              - column: { name: sort_order, type: int, constraints: { nullable: false } }
+              - column: { name: visible, type: boolean, constraints: { nullable: false } }
+              - column: { name: enabled, type: boolean, constraints: { nullable: false } }
+              - column: { name: created_at, type: datetime, constraints: { nullable: false } }
+              - column: { name: updated_at, type: datetime, constraints: { nullable: false } }
+        - createIndex:
+            tableName: coreib_sys_menu
+            indexName: idx_cib_menu_parent
+            columns: [ { column: { name: parent_id } }, { column: { name: sort_order } } ]
+        - createTable:
+            tableName: coreib_sys_post
+            columns:
+              - column: { name: id, type: varchar(64), constraints: { nullable: false, primaryKey: true, primaryKeyName: pk_cib_post } }
+              - column: { name: post_code, type: varchar(64), constraints: { nullable: false } }
+              - column: { name: post_name, type: varchar(128), constraints: { nullable: false } }
+              - column: { name: sort_order, type: int, constraints: { nullable: false } }
+              - column: { name: enabled, type: boolean, constraints: { nullable: false } }
+              - column: { name: created_at, type: datetime, constraints: { nullable: false } }
+              - column: { name: updated_at, type: datetime, constraints: { nullable: false } }
+        - addUniqueConstraint: { tableName: coreib_sys_post, columnNames: post_code, constraintName: uk_cib_post_code }
+        - createTable:
+            tableName: coreib_sys_dict_type
+            columns:
+              - column: { name: id, type: varchar(64), constraints: { nullable: false, primaryKey: true, primaryKeyName: pk_cib_dict_type } }
+              - column: { name: type_code, type: varchar(128), constraints: { nullable: false } }
+              - column: { name: type_name, type: varchar(128), constraints: { nullable: false } }
+              - column: { name: remark, type: varchar(512) }
+              - column: { name: enabled, type: boolean, constraints: { nullable: false } }
+              - column: { name: created_at, type: datetime, constraints: { nullable: false } }
+              - column: { name: updated_at, type: datetime, constraints: { nullable: false } }
+        - addUniqueConstraint: { tableName: coreib_sys_dict_type, columnNames: type_code, constraintName: uk_cib_dict_type_code }
+        - createTable:
+            tableName: coreib_sys_dict_data
+            columns:
+              - column: { name: id, type: varchar(64), constraints: { nullable: false, primaryKey: true, primaryKeyName: pk_cib_dict_data } }
+              - column: { name: type_code, type: varchar(128), constraints: { nullable: false } }
+              - column: { name: data_label, type: varchar(128), constraints: { nullable: false } }
+              - column: { name: data_value, type: varchar(256), constraints: { nullable: false } }
+              - column: { name: sort_order, type: int, constraints: { nullable: false } }
+              - column: { name: enabled, type: boolean, constraints: { nullable: false } }
+              - column: { name: created_at, type: datetime, constraints: { nullable: false } }
+              - column: { name: updated_at, type: datetime, constraints: { nullable: false } }
+        - createIndex:
+            tableName: coreib_sys_dict_data
+            indexName: idx_cib_dict_data_type
+            columns: [ { column: { name: type_code } }, { column: { name: sort_order } } ]
+        - createTable:
+            tableName: coreib_sys_config
+            columns:
+              - column: { name: id, type: varchar(64), constraints: { nullable: false, primaryKey: true, primaryKeyName: pk_cib_config } }
+              - column: { name: config_key, type: varchar(128), constraints: { nullable: false } }
+              - column: { name: config_name, type: varchar(128), constraints: { nullable: false } }
+              - column: { name: config_value, type: varchar(2000), constraints: { nullable: false } }
+              - column: { name: public_visible, type: boolean, constraints: { nullable: false } }
+              - column: { name: remark, type: varchar(512) }
+              - column: { name: created_at, type: datetime, constraints: { nullable: false } }
+              - column: { name: updated_at, type: datetime, constraints: { nullable: false } }
+        - addUniqueConstraint: { tableName: coreib_sys_config, columnNames: config_key, constraintName: uk_cib_config_key }
+        - createTable:
+            tableName: coreib_sys_notice
+            columns:
+              - column: { name: id, type: varchar(64), constraints: { nullable: false, primaryKey: true, primaryKeyName: pk_cib_notice } }
+              - column: { name: title, type: varchar(256), constraints: { nullable: false } }
+              - column: { name: notice_type, type: varchar(32), constraints: { nullable: false } }
+              - column: { name: status, type: varchar(32), constraints: { nullable: false } }
+              - column: { name: content, type: varchar(4000), constraints: { nullable: false } }
+              - column: { name: published_at, type: datetime }
+              - column: { name: created_at, type: datetime, constraints: { nullable: false } }
+              - column: { name: updated_at, type: datetime, constraints: { nullable: false } }
+        - createTable:
+            tableName: coreib_login_event
+            columns:
+              - column: { name: event_id, type: varchar(64), constraints: { nullable: false, primaryKey: true, primaryKeyName: pk_cib_login_event } }
+              - column: { name: user_id, type: varchar(128), constraints: { nullable: false } }
+              - column: { name: identity_name, type: varchar(256), constraints: { nullable: false } }
+              - column: { name: source_ip, type: varchar(64) }
+              - column: { name: outcome, type: varchar(32), constraints: { nullable: false } }
+              - column: { name: message, type: varchar(512) }
+              - column: { name: occurred_at, type: datetime, constraints: { nullable: false } }
+        - createIndex:
+            tableName: coreib_login_event
+            indexName: idx_cib_login_user_time
+            columns: [ { column: { name: user_id } }, { column: { name: occurred_at } } ]
+        - createTable:
+            tableName: coreib_file_object
+            columns:
+              - column: { name: id, type: varchar(64), constraints: { nullable: false, primaryKey: true, primaryKeyName: pk_cib_file_object } }
+              - column: { name: original_name, type: varchar(512), constraints: { nullable: false } }
+              - column: { name: storage_name, type: varchar(128), constraints: { nullable: false } }
+              - column: { name: content_type, type: varchar(256) }
+              - column: { name: size_bytes, type: bigint, constraints: { nullable: false } }
+              - column: { name: uploader_id, type: varchar(128), constraints: { nullable: false } }
+              - column: { name: created_at, type: datetime, constraints: { nullable: false } }
+      rollback:
+        - dropTable: { tableName: coreib_file_object }
+        - dropTable: { tableName: coreib_login_event }
+        - dropTable: { tableName: coreib_sys_notice }
+        - dropTable: { tableName: coreib_sys_config }
+        - dropTable: { tableName: coreib_sys_dict_data }
+        - dropTable: { tableName: coreib_sys_dict_type }
+        - dropTable: { tableName: coreib_sys_post }
+        - dropTable: { tableName: coreib_sys_menu }

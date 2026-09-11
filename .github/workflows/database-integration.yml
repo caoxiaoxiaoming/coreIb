@@ -1,0 +1,103 @@
+name: coreIb database integration
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  postgresql:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: coreib
+          POSTGRES_USER: coreib
+          POSTGRES_PASSWORD: coreib
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U coreib -d coreib"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Run PostgreSQL integration test
+        shell: bash
+        run: >-
+          mvn -Pintegration -pl coreib-starter-jdbc -am verify
+          -Dcoreib.it.vendor=postgresql
+          -Dcoreib.it.url='jdbc:postgresql://localhost:5432/coreib'
+          -Dcoreib.it.username=coreib -Dcoreib.it.password=coreib
+
+  sqlserver:
+    runs-on: ubuntu-latest
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: Y
+          MSSQL_SA_PASSWORD: 'CoreIb!Integration2026'
+        ports:
+          - 1433:1433
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Wait for SQL Server
+        shell: bash
+        run: |
+          for i in {1..30}; do
+            (echo > /dev/tcp/127.0.0.1/1433) >/dev/null 2>&1 && exit 0
+            sleep 5
+          done
+          exit 1
+      - name: Run SQL Server integration test
+        shell: bash
+        run: >-
+          mvn -Pintegration -pl coreib-starter-jdbc -am verify
+          -Dcoreib.it.vendor=sql-server
+          -Dcoreib.it.url='jdbc:sqlserver://localhost:1433;databaseName=master;encrypt=false'
+          -Dcoreib.it.username=sa -Dcoreib.it.password='CoreIb!Integration2026'
+
+  oracle:
+    runs-on: ubuntu-latest
+    services:
+      oracle:
+        image: gvenzl/oracle-free:23-slim-faststart
+        env:
+          ORACLE_PASSWORD: 'CoreIb!Integration2026'
+          APP_USER: coreib
+          APP_USER_PASSWORD: coreib
+        ports:
+          - 1521:1521
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Wait for Oracle
+        shell: bash
+        run: |
+          for i in {1..60}; do
+            (echo > /dev/tcp/127.0.0.1/1521) >/dev/null 2>&1 && exit 0
+            sleep 5
+          done
+          exit 1
+      - name: Run Oracle integration test
+        shell: bash
+        run: >-
+          mvn -Pintegration -pl coreib-starter-jdbc -am verify
+          -Dcoreib.it.vendor=oracle
+          -Dcoreib.it.url='jdbc:oracle:thin:@//localhost:1521/FREEPDB1'
+          -Dcoreib.it.username=coreib -Dcoreib.it.password=coreib

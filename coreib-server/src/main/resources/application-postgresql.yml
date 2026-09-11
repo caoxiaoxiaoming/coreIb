@@ -1,0 +1,7 @@
+coreib:
+  datasource:
+    enabled: true
+    vendor: postgresql
+    jdbc-url: ${COREIB_DB_URL:jdbc:postgresql://localhost:5432/coreib}
+    username: ${COREIB_DB_USERNAME:coreib}
+    password: ${COREIB_DB_PASSWORD:}

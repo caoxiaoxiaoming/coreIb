@@ -4,22 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.caoxiaoxiaoming</groupId>
+    <groupId>com.coreib</groupId>
     <artifactId>coreib</artifactId>
     <version>1.0.1</version>
-    <packaging>jar</packaging>
-
+    <packaging>pom</packaging>
     <name>coreIb</name>
-    <description>A small shared Java core library.</description>
+    <description>Business application foundation</description>
     <url>https://github.com/caoxiaoxiaoming/coreIb</url>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.outputTimestamp>2026-09-11T00:00:00Z</project.build.outputTimestamp>
-        <maven.compiler.release>8</maven.compiler.release>
-        <maven.resources.propertiesEncoding>UTF-8</maven.resources.propertiesEncoding>
-        <junit.version>5.11.4</junit.version>
-    </properties>
 
     <scm>
         <connection>scm:git:https://github.com/caoxiaoxiaoming/coreIb.git</connection>
@@ -36,41 +27,57 @@
         </repository>
     </distributionManagement>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>coreib-bom</module>
+        <module>coreib-kernel</module>
+        <module>coreib-data</module>
+        <module>coreib-security</module>
+        <module>coreib-platform</module>
+        <module>coreib-starter-jdbc</module>
+        <module>coreib-starter-security</module>
+        <module>coreib-starter-web</module>
+        <module>coreib-server</module>
+    </modules>
+
+    <properties>
+        <java.version>17</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.outputTimestamp>2026-09-11T00:00:00Z</project.build.outputTimestamp>
+        <spring-boot.version>4.1.0</spring-boot.version>
+        <coreib.liquibase.version>5.0.3</coreib.liquibase.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
-                <configuration>
-                    <propertiesEncoding>${project.build.sourceEncoding}</propertiesEncoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.2</version>
-            </plugin>
-        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.14.0</version>
+                    <configuration>
+                        <release>${maven.compiler.release}</release>
+                        <parameters>true</parameters>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 </project>

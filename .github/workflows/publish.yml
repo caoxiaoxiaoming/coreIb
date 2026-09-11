@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: "8"
+          java-version: "17"
           cache: maven
           server-id: github
           server-username: GITHUB_ACTOR
@@ -36,6 +36,6 @@ jobs:
           esac
 
       - name: Build and publish
-        run: mvn --batch-mode --no-transfer-progress deploy
+        run: mvn --batch-mode --no-transfer-progress clean deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

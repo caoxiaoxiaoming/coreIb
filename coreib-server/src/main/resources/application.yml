@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: coreib-server
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+coreib:
+  files:
+    directory: ${COREIB_FILE_DIRECTORY:${java.io.tmpdir}/coreib-files}
+  datasource:
+    enabled: false
+  security:
+    authentication:
+      mode: ${COREIB_AUTH_MODE:DISABLED}
+      principal-claim: ${COREIB_AUTH_PRINCIPAL_CLAIM:sub}
+      oidc-registration-id: ${COREIB_OIDC_REGISTRATION_ID:coreib}
+      login-success-url: ${COREIB_AUTH_LOGIN_SUCCESS_URL:/}
+      logout-success-url: ${COREIB_AUTH_LOGOUT_SUCCESS_URL:/}
+    # Enable only after authentication establishes request.getUserPrincipal().
+    jdbc:
+      enabled: false
+      principal-lookup: ${COREIB_AUTH_PRINCIPAL_LOOKUP:ID}
+  bootstrap:
+    admin:
+      enabled: ${COREIB_BOOTSTRAP_ADMIN_ENABLED:false}
+      user-id: ${COREIB_BOOTSTRAP_ADMIN_USER_ID:platform-admin-001}
+      login-name: ${COREIB_BOOTSTRAP_ADMIN_LOGIN_NAME:platform.admin}
+      display-name: ${COREIB_BOOTSTRAP_ADMIN_DISPLAY_NAME:平台管理员}
+      external-identity: ${COREIB_BOOTSTRAP_ADMIN_EXTERNAL_IDENTITY:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+server:
+  shutdown: graceful

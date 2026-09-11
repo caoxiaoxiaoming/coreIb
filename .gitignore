@@ -1,6 +1,24 @@
+# Java / Maven
 target/
+*.log
+
+# Node / Vite
+node_modules/
+dist/
+*.tsbuildinfo
+coreib-web/src/**/*.js
+coreib-web/src/**/*.d.ts
+coreib-web/vite.config.js
+coreib-web/vite.config.d.ts
+
+# IDE / editor
 .idea/
+.vscode/
 *.iml
-.classpath
 .project
+.classpath
 .settings/
+
+# OS
+.DS_Store
+Thumbs.db

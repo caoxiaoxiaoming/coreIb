@@ -1,0 +1,2 @@
+com.coreib.starter.jdbc.CoreIbJdbcAutoConfiguration
+com.coreib.starter.jdbc.CoreIbLiquibaseAutoConfiguration
