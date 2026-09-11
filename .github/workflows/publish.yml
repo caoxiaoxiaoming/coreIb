@@ -1,0 +1,41 @@
+name: Publish Maven package
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "8"
+          cache: maven
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+
+      - name: Verify release version
+        shell: bash
+        run: |
+          version="$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
+          test "$version" = "${GITHUB_REF_NAME#v}"
+          case "$version" in
+            *-SNAPSHOT) exit 1 ;;
+          esac
+
+      - name: Build and publish
+        run: mvn --batch-mode --no-transfer-progress deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
